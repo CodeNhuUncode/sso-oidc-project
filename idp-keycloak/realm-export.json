@@ -1,0 +1,134 @@
+{
+  "realm": "enterprise-sso",
+  "enabled": true,
+  "sslRequired": "none",
+  "accessTokenLifespan": 60,
+  "ssoSessionIdleTimeout": 1800,
+  "roles": {
+    "realm": [
+      {
+        "name": "role_user",
+        "description": "Nhan vien thuong"
+      },
+      {
+        "name": "role_admin",
+        "description": "Quan tri vien he thong"
+      }
+    ]
+  },
+  "clientScopes": [
+    {
+      "name": "admin:manage",
+      "description": "Quyen quan tri he thong",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true"
+      }
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "app1-portal",
+      "name": "App 1 - Cong thong tin nhan vien",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "app1-secret-key-2026",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [
+        "http://localhost:3001/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:3001"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:3001/*"
+      },
+      "defaultClientScopes": [
+        "openid",
+        "profile",
+        "email",
+        "roles"
+      ]
+    },
+    {
+      "clientId": "app2-admin",
+      "name": "App 2 - He thong quan tri",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "app2-secret-key-2026",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [
+        "http://localhost:3002/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:3002"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:3002/*"
+      },
+      "defaultClientScopes": [
+        "openid",
+        "profile",
+        "email",
+        "roles"
+      ],
+      "optionalClientScopes": [
+        "admin:manage"
+      ],
+      "protocolMappers": [
+        {
+          "name": "app2-audience-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "app2-admin",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "nv01",
+      "enabled": true,
+      "email": "nv01@techcorp.local",
+      "firstName": "Nhan Vien",
+      "lastName": "01",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "123456",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "role_user"
+      ]
+    },
+    {
+      "username": "admin01",
+      "enabled": true,
+      "email": "admin01@techcorp.local",
+      "firstName": "Quan Tri",
+      "lastName": "01",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "123456",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "role_admin"
+      ]
+    }
+  ]
+}
