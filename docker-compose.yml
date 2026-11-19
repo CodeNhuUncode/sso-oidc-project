@@ -10,12 +10,31 @@ services:
       KC_HOSTNAME_PORT: 8080
       KC_HOSTNAME_STRICT: "false"
       KC_HTTP_ENABLED: "true"
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./idp-keycloak:/opt/keycloak/data/import
-    networks:
-      - sso-net
+    ports: ["8080:8080"]
+    volumes: ["./idp-keycloak:/opt/keycloak/data/import"]
+    networks: [sso-net]
+
+  app1-portal:
+    build: ./app1-portal
+    container_name: techcorp-app1-portal
+    command: uvicorn main:app --host 0.0.0.0 --port 3001
+    environment:
+      PUBLIC_KEYCLOAK_URL: http://localhost:8080
+      INTERNAL_KEYCLOAK_URL: http://keycloak:8080
+    ports: ["3001:3001"]
+    depends_on: [keycloak]
+    networks: [sso-net]
+
+  app2-admin:
+    build: ./app2-admin
+    container_name: techcorp-app2-admin
+    command: uvicorn main:app --host 0.0.0.0 --port 3002
+    environment:
+      PUBLIC_KEYCLOAK_URL: http://localhost:8080
+      INTERNAL_KEYCLOAK_URL: http://keycloak:8080
+    ports: ["3002:3002"]
+    depends_on: [keycloak]
+    networks: [sso-net]
 
 networks:
   sso-net:
