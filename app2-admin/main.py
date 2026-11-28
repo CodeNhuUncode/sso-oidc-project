@@ -1,11 +1,19 @@
 import base64, hashlib, json, os, secrets, urllib.parse
 import httpx
 from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, RedirectResponse
 from jose import jwt, JWTError
 from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI(title="App 2 - TechCorp Admin")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3001", "http://localhost:3002"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.add_middleware(SessionMiddleware, secret_key="admin-secret-2026", session_cookie="app2_session")
 
 PUB_KC = os.getenv("PUBLIC_KEYCLOAK_URL", "http://localhost:8080")
