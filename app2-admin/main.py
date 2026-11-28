@@ -35,10 +35,50 @@ def verify_state(state: str) -> str | None:
 def home(request: Request):
     u = request.session.get("user")
     if not u:
-        return '<div style="font-family:Arial;max-width:700px;margin:40px auto;"><h2>TechCorp - App 2: Hệ thống Quản trị Nội bộ (Port 3002)</h2><p>Trạng thái: <b>Chưa xác thực cục bộ</b></p><a href="/login"><button style="padding:10px 16px;cursor:pointer;">Đăng nhập / Đồng bộ phiên SSO</button></a><hr><p><a href="http://localhost:3001" target="_blank">Quay lại App 1 Portal (Port 3001)</a></p></div>'
+        return """
+        <div style="font-family:Arial;max-width:700px;margin:40px auto;">
+            <h2>TechCorp - App 2: Hệ thống Quản trị Nội bộ (Port 3002)</h2>
+            <p>Trạng thái: <b>Chưa xác thực cục bộ</b></p>
+            <a href="/login"><button style="padding:10px 16px;cursor:pointer;">Đăng nhập / Đồng bộ phiên SSO</button></a>
+            <hr><p><a href="http://localhost:3001" target="_blank">Quay lại App 1 Portal (Port 3001)</a></p>
+        </div>
+        """
     tok = request.session.get("access_token", "")
     roles = u.get("realm_access", {}).get("roles", [])
-    return f'<div style="font-family:Arial;max-width:820px;margin:30px auto;"><h2>App 2 Admin - Bảng điều khiển & Kiểm thử RBAC / JWT</h2><p><b>Tài khoản SSO:</b> {u.get("preferred_username")} | <b>Roles:</b> {roles} | <b>Audience (aud):</b> {u.get("aud")}</p><p><b>Access Token hiện tại (sống 60s):</b></p><textarea id="t" rows="4" style="width:100%;font-size:12px;">{tok}</textarea><div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;"><button onclick="callApi(\'/api/reports\',\'GET\')" style="padding:8px 12px;">1. GET /api/reports (User & Admin)</button><button onclick="callApi(\'/api/system-config\',\'POST\')" style="padding:8px 12px;">2. POST /api/system-config (Chỉ Admin)</button><button onclick="callApi(\'/api/audit-logs\',\'GET\')" style="padding:8px 12px;">3. GET /api/audit-logs (Chỉ Admin)</button><a href="/logout"><button style="padding:8px 12px;background:#d9534f;color:white;border:none;">Đăng xuất (SLO)</button></a></div><pre id="o" style="background:#1e1e1e;color:#d4d4d4;padding:14px;margin-top:15px;border-radius:6px;overflow-x:auto;">Nhấn nút API phía trên để kiểm tra phản hồi...</pre><script>async function callApi(url,method){{const token=document.getElementById("t").value.trim();const res=await fetch(url,{{method:method,headers:{{"Authorization":"Bearer "+token}}}});const body=await res.json();document.getElementById("o").textContent="HTTP Status: "+res.status+" "+res.statusText+"\n"+JSON.stringify(body,null,2);}}</script></div>'
+    return f"""
+    <div style="font-family:Arial;max-width:820px;margin:30px auto;">
+        <h2>App 2 Admin - Bảng điều khiển &amp; Kiểm thử RBAC / JWT</h2>
+        <p><b>Tài khoản SSO:</b> {u.get("preferred_username")} | <b>Roles:</b> {roles} | <b>Audience (aud):</b> {u.get("aud")}</p>
+        <p><b>Access Token hiện tại (sống 60s):</b></p>
+        <textarea id="t" rows="4" style="width:100%;font-size:12px;">{tok}</textarea>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" onclick="callApi('/api/reports','GET')" style="padding:8px 12px;cursor:pointer;">1. GET /api/reports (User &amp; Admin)</button>
+            <button type="button" onclick="callApi('/api/system-config','POST')" style="padding:8px 12px;cursor:pointer;">2. POST /api/system-config (Chỉ Admin)</button>
+            <button type="button" onclick="callApi('/api/audit-logs','GET')" style="padding:8px 12px;cursor:pointer;">3. GET /api/audit-logs (Chỉ Admin)</button>
+            <a href="/logout"><button type="button" style="padding:8px 12px;background:#d9534f;color:white;border:none;cursor:pointer;">Đăng xuất (SLO)</button></a>
+        </div>
+        <pre id="o" style="background:#1e1e1e;color:#d4d4d4;padding:14px;margin-top:15px;border-radius:6px;overflow-x:auto;">Nhấn nút API phía trên để kiểm tra phản hồi...</pre>
+        <script>
+        async function callApi(url, method) {{
+            const out = document.getElementById("o");
+            out.textContent = "Đang gọi " + method + " " + url + "...";
+            try {{
+                const token = document.getElementById("t").value.trim();
+                const res = await fetch(url, {{
+                    method: method,
+                    headers: {{ "Authorization": "Bearer " + token }}
+                }});
+                const text = await res.text();
+                let formatted = text;
+                try {{ formatted = JSON.stringify(JSON.parse(text), null, 2); }} catch (e) {{}}
+                out.textContent = "HTTP Status: " + res.status + " " + res.statusText + "\n" + formatted;
+            }} catch (err) {{
+                out.textContent = "Lỗi kết nối: " + err;
+            }}
+        }}
+        </script>
+    </div>
+    """
 
 @app.get("/login")
 def login():
