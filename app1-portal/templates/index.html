@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sso-oidc-project</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f6f8;
+            color: #222222;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #d9dee3;
+            border-radius: 6px;
+            padding: 32px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .org-label {
+            font-size: 12px;
+            color: #555555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #4b5563;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 11px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background-color: #ffffff;
+            color: #374151;
+            border-color: #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f9fafb;
+        }
+
+        .note {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 12px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="org-label">TechCorp Internal</div>
+        <h1>{{ app_name }}</h1>
+        <p class="subtitle">
+            Cong thong tin nhan vien - Cong ty Cong nghe TechCorp.<br>
+            Dang nhap tap trung qua Keycloak (OpenID Connect + PKCE S256).
+        </p>
+
+        <div class="actions">
+            <a href="/login" class="btn btn-primary">Dang nhap SSO (PKCE S256)</a>
+            <a href="{{ app2_url }}" target="_blank" class="btn btn-secondary">Mo App 2 (Admin)</a>
+        </div>
+
+        <p class="note">
+            Giao thuc OAuth 2.0 Authorization Code ket hop PKCE (SHA-256).
+        </p>
+    </div>
+
+    <p class="footer">TechCorp - De tai 12: Mo hinh dang nhap tap trung OIDC va OAuth 2.0</p>
+
+</body>
+</html>
